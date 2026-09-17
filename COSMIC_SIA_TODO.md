@@ -86,10 +86,12 @@ decorations, GPU buffer sharing, or multi-seat/multi-output policy to v1.
 
 ### P0 -- Establish the port boundary
 
-- [ ] Add this roadmap to the repository and preserve the upstream Orbital
+- [x] Add this roadmap to the repository and preserve the upstream Orbital
       license and notices.
-- [ ] Record the upstream Orbital commit used as the initial source baseline.
-- [ ] Create a source inventory separating portable code from Redox coupling:
+- [x] Record the upstream Orbital commit used as the initial source baseline:
+      `bf26501c9e9cd40c216408b8f5ba60a6fa476cc5` (upstream Orbital mirror
+      state immediately before this roadmap).
+- [x] Create a source inventory ([`docs/PORT_BOUNDARY.md`](docs/PORT_BOUNDARY.md)) separating portable code from Redox coupling:
   `src/core.rs`, `window.rs`, `window_order.rs`, widgets and compositor
   algorithms versus `main.rs`, `scheme.rs`, Redox DRM/input/event setup.
 - [ ] Do not update upstream just to make the fork look current; keep changes
@@ -100,14 +102,14 @@ decorations, GPU buffer sharing, or multi-seat/multi-output policy to v1.
 
 ### P1 -- Make a portable compositor core (host executable)
 
-- [ ] Split the crate into:
+- [x] Begin the split with:
   - `cosmic-display-core`: geometry, window/surface state, damage, ordering,
     focus selection and composition planning;
   - `cosmic-present`: wire-safe IDs, formats, events and validation;
   - `cosmic-display-host`: normal-host executable and mock platform;
   - retain an `orbital-compat` layer only where it helps migrate existing
     Orbital clients.
-- [ ] Make `core` use `alloc` and explicit traits instead of Redox
+- [x] Make the new portable core use `alloc` and explicit data contracts instead of Redox
       syscalls, schemes, files or device types.  `std` is permitted in the
       host adapter but must not leak into `core` or `cosmic-present`.
 - [ ] Introduce narrow traits:
@@ -118,11 +120,16 @@ decorations, GPU buffer sharing, or multi-seat/multi-output policy to v1.
 - [ ] Keep current Orbital window ordering and rendering behaviour where it
       fits.  Replace scheme-open/read/write/event-poll with explicit session
       operations; do not emulate a Redox scheme inside Cosmic.
-- [ ] Add deterministic unit tests for surface lifetime, damage coalescing,
-      occlusion/order, focus changes, resize serials, and disconnect cleanup.
+- [x] Add deterministic unit tests for surface lifetime, clipped damage,
+      layer ordering, focus changes and disconnect cleanup.
+- [ ] Add damage coalescing and resize serials after the session/commit API is
+      introduced; they cannot be correct as orphaned geometry helpers.
 
 **Gate:** `cargo test --workspace` passes on x86_64 and no portable crate
 depends on a Redox-only crate.
+
+The repository's `Host portability` workflow enforces this gate on ordinary
+host CI. It intentionally leaves the `redox-compat` binary disabled.
 
 ### P2 -- Host composition and client proof
 
