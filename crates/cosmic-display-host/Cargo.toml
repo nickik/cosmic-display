@@ -1,0 +1,11 @@
+[package]
+name = "cosmic-display-host"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Deterministic host adapter scaffolding for Cosmic display"
+publish = false
+
+[dependencies]
+cosmic-display-core = { path = "../cosmic-display-core" }
+cosmic-present = { path = "../cosmic-present" }

@@ -1,0 +1,10 @@
+[package]
+name = "cosmic-present"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Portable protocol types for the Cosmic presentation service"
+publish = false
+
+[lib]
+path = "src/lib.rs"
